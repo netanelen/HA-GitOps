@@ -1,0 +1,4 @@
+apiVersion: v2
+name: flask-aws-monitor
+description: Deploys the Flask AWS monitor app.
+version: 0.1.0
