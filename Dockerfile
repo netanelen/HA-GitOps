@@ -1,17 +1,29 @@
 FROM python:3.9-slim as builder
+
 WORKDIR /app
+
 COPY requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
 
-FROM python:3.9-slim
-WORKDIR /app
-COPY --from=builder /usr/local/lib/python3.9/site-packages /usr/local/lib/python3.9/site-packages
-COPY --from=builder /app /app
-COPY app.py .
 
-ENV AWS_ACCESS_KEY_ID=""
-ENV AWS_SECRET_ACCESS_KEY=""
+FROM python:3.9-slim
+
+WORKDIR /app
+
+
+RUN addgroup --system appgroup && adduser --system --ingroup appgroup --no-create-home appuser
+# ---
+
+
+COPY --from=builder /usr/local/lib/python3.9/site-packages /usr/local/lib/python3.9/site-packages
+
+COPY ./app /app/app
+
+RUN chown -R appuser:appgroup /app
+
+USER appuser
+
 
 EXPOSE 5001
 
-CMD ["python", "app.py"]
+CMD ["gunicorn", "--bind", "0.0.0.0:5001", "--workers", "2", "app.app:app"]
