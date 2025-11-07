@@ -36,7 +36,7 @@ This project provides a simple Flask web application to monitor AWS resources (E
 	```sh
 	python app/app.py
 	```
-	The app will be available at http://localhost:5001
+
 
 4. **Build Docker image:**
 	```sh
