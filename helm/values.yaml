@@ -1,20 +1,16 @@
 replicaCount: 1
-
 image:
   repository: netanele/flask-aws-monitor # Change this
-  tag: "latest" # Jenkins will update this tag
+  tag: "v10" # Jenkins will update this tag
   pullPolicy: IfNotPresent
-
 service:
-  type: LoadBalancer 
+  type: LoadBalancer
   port: 5001
-
 ingress:
   enabled: false
   # hosts:
   #   - host: chart-example.local
   #     paths: ["/"]
-
 awsCredentials:
   accessKey: ""
   secretKey: ""
