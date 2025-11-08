@@ -2,7 +2,7 @@ replicaCount: 1
 image:
   repository: ste18nati/flask-aws-monitor # Change this
   tag: "v12" # Jenkins will update this tag
-  pullPolicy: IfNotPresent
+  pullPolicy: Always
 service:
   type: LoadBalancer
   port: 5001
