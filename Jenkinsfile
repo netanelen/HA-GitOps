@@ -1,4 +1,3 @@
-// Jenkinsfile (Advanced - Final Kaniko Version)
 pipeline {
     agent {
         label 'agent-base'
@@ -8,7 +7,8 @@ pipeline {
         DOCKERHUB_USERNAME    = "ste18nati" 
         IMAGE_NAME            = "${DOCKERHUB_USERNAME}/flask-aws-monitor"
         GIT_REPO_URL          = "https://github.com/netanelen/HA-GitOps.git" 
-        IMAGE_TAG             = "v${env.BUILD_NUMBER}" 
+        IMAGE_TAG             = "v${env.BUILD_NUMBER}"
+        TIMESTAMP             = new Date().format('yyyyMMdd-HHmmss')
     }
     
     options {
@@ -61,14 +61,19 @@ pipeline {
         stage ('Build and Push with Kaniko') {
             steps {
                 container('kaniko') {
-                    echo "Building and pushing image: ${env.IMAGE_NAME}:${env.IMAGE_TAG}"
+                    // --- UPDATED ---
+                    echo "Building and pushing image with tags: ${env.IMAGE_TAG}, ${env.TIMESTAMP}, and latest"
                     sh """
                     /kaniko/executor \
                       --context="dir://\$(pwd)" \
                       --dockerfile="Dockerfile" \
                       --destination="${env.IMAGE_NAME}:${env.IMAGE_TAG}" \
-                      --destination="${env.IMAGE_NAME}:latest"
+                      --destination="${env.IMAGE_NAME}:latest" \
+                      --destination="${env.IMAGE_NAME}:${env.TIMESTAMP}" 
+                      
+                      
                     """
+                    // The --destination flag can be used multiple times
                 }
             }
         }
@@ -76,6 +81,7 @@ pipeline {
         stage ('Trivy Scan') {
             steps {
                 container('trivy') {
+                    // We still scan the main build number tag. No change needed here.
                     echo "Scanning image ${env.IMAGE_NAME}:${env.IMAGE_TAG}"
                     sh """
                     export DOCKER_CONFIG=/kaniko/.docker
@@ -88,6 +94,7 @@ pipeline {
         stage('Update Git Repo (Trigger ArgoCD)') {
             steps {
                 container('yq') {
+                    // We still update ArgoCD with the clean build number. No change needed here.
                     echo "Updating Helm chart image tag to ${env.IMAGE_TAG}"
                     sh "test -f helm/values.yaml || { echo 'Error: helm/values.yaml not found'; exit 1; }"
                     sh "yq e '.image.tag = \"${env.IMAGE_TAG}\"' -i helm/values.yaml"
@@ -107,11 +114,8 @@ pipeline {
                     if (hasChanges) {
                         sh "git commit -m 'CI: Update image tag to ${env.IMAGE_TAG}'"
                         
-                        // --- THIS IS THE LINE I FIXED ---
-                        // It now correctly asks for "usernamePassword" credentials
                         withCredentials([usernamePassword(credentialsId: 'github-credentials', usernameVariable: 'GIT_USER', passwordVariable: 'GIT_TOKEN')]) {
                             def repoHost = env.GIT_REPO_URL.replace('https://', '').replace('.git', '')
-                            // We use the $GIT_TOKEN (your PAT) in the URL
                             sh "git push https://${GIT_TOKEN}@${repoHost} HEAD:main"
                         }
                     } else {
