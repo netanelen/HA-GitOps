@@ -1,7 +1,7 @@
 replicaCount: 1
 image:
   repository: netanele/flask-aws-monitor # Change this
-  tag: "v10" # Jenkins will update this tag
+  tag: "v11" # Jenkins will update this tag
   pullPolicy: IfNotPresent
 service:
   type: LoadBalancer
