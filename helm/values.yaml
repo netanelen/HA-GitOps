@@ -1,6 +1,6 @@
 replicaCount: 1
 image:
-  repository: netanele/flask-aws-monitor # Change this
+  repository: ste18nati/flask-aws-monitor # Change this
   tag: "v12" # Jenkins will update this tag
   pullPolicy: IfNotPresent
 service:
