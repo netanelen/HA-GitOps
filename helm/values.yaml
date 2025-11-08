@@ -1,7 +1,7 @@
 replicaCount: 1
 image:
   repository: ste18nati/flask-aws-monitor # Change this
-  tag: "v12" # Jenkins will update this tag
+  tag: "v59" # Jenkins will update this tag
   pullPolicy: Always
 resources:
   limits:
@@ -21,4 +21,3 @@ ingress:
 awsCredentials:
   accessKey: ""
   secretKey: ""
-
