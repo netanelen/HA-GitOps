@@ -37,7 +37,7 @@ pipeline {
                                 echo "Running Flake8..."
                                 sh "flake8 ./app || true" 
                                 echo "Running Bandit..."
-                                sh "bandit -r ./app || true" // Ignore bandit failures
+                                sh "bandit -r ./app || true"
                             }
                         }
                     }
@@ -50,7 +50,7 @@ pipeline {
                                     error("Dockerfile not found. Please ensure Dockerfile exists in the repository root.")
                                 }
                                 echo "Running Hadolint..."
-                                sh "hadolint Dockerfile || true" // Ignore hadolint failures
+                                sh "hadolint Dockerfile || true"
                             }
                         }
                     }
@@ -85,17 +85,14 @@ pipeline {
             }
         }
 
-        // --- THIS STAGE IS NOW FIXED ---
         stage('Update Git Repo (Trigger ArgoCD)') {
             steps {
-                // Step 1: Edit the file using the 'yq' container
                 container('yq') {
                     echo "Updating Helm chart image tag to ${env.IMAGE_TAG}"
                     sh "test -f helm/values.yaml || { echo 'Error: helm/values.yaml not found'; exit 1; }"
                     sh "yq e '.image.tag = \"${env.IMAGE_TAG}\"' -i helm/values.yaml"
                 }
                 
-                // Step 2: Commit and push using the default 'jnlp' container (which has git)
                 echo "Committing and pushing changes..."
                 script {
                     sh "git config --global user.email 'jenkins@example.com'"
@@ -110,8 +107,11 @@ pipeline {
                     if (hasChanges) {
                         sh "git commit -m 'CI: Update image tag to ${env.IMAGE_TAG}'"
                         
-                        withCredentials([string(credentialsId: 'github-credentials', variable: 'GIT_TOKEN')]) {
+                        // --- THIS IS THE LINE I FIXED ---
+                        // It now correctly asks for "usernamePassword" credentials
+                        withCredentials([usernamePassword(credentialsId: 'github-credentials', usernameVariable: 'GIT_USER', passwordVariable: 'GIT_TOKEN')]) {
                             def repoHost = env.GIT_REPO_URL.replace('https://', '').replace('.git', '')
+                            // We use the $GIT_TOKEN (your PAT) in the URL
                             sh "git push https://${GIT_TOKEN}@${repoHost} HEAD:main"
                         }
                     } else {
