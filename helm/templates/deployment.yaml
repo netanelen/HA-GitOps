@@ -22,18 +22,24 @@ spec:
             - name: http
               containerPort: {{ .Values.service.port }}
               protocol: TCP
+          resources:
+            requests:
+              cpu: {{ .Values.resources.requests.cpu }}
+              memory: {{ .Values.resources.requests.memory }}
+            limits:
+              cpu: {{ .Values.resources.limits.cpu }}
+              memory: {{ .Values.resources.limits.memory }}
           env:
             - name: AWS_ACCESS_KEY_ID
               valueFrom:
                 secretKeyRef:
-                  name: aws-creds # This MUST match the secret you created
+                  name: aws-creds 
                   key: AWS_ACCESS_KEY_ID
             - name: AWS_SECRET_ACCESS_KEY
               valueFrom:
                 secretKeyRef:
-                  name: aws-creds # This MUST match the secret you created
+                  name: aws-creds 
                   key: AWS_SECRET_ACCESS_KEY
-          # Liveness and Readiness Probes are a best practice
           livenessProbe:
             httpGet:
               path: /

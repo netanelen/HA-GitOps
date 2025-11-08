@@ -3,6 +3,13 @@ image:
   repository: ste18nati/flask-aws-monitor # Change this
   tag: "v12" # Jenkins will update this tag
   pullPolicy: Always
+resources:
+  limits:
+    cpu: "250m"
+    memory: "64Mi"
+  requests:
+    cpu: "500m"
+    memory: "128Mi"
 service:
   type: LoadBalancer
   port: 5001
@@ -14,3 +21,4 @@ ingress:
 awsCredentials:
   accessKey: ""
   secretKey: ""
+
