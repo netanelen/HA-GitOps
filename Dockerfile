@@ -12,8 +12,6 @@ WORKDIR /app
 
 
 RUN addgroup --system appgroup && adduser --system --ingroup appgroup --no-create-home appuser
-# ---
-
 
 COPY --from=builder /usr/local/lib/python3.9/site-packages /usr/local/lib/python3.9/site-packages
 
