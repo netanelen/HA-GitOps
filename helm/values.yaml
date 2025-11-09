@@ -1,7 +1,7 @@
 replicaCount: 1
 image:
   repository: ste18nati/flask-aws-monitor # Change this
-  tag: "v71" # Jenkins will update this tag
+  tag: "v72" # Jenkins will update this tag
   pullPolicy: Always
 resources:
   limits:
