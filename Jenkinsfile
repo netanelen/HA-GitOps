@@ -1,4 +1,3 @@
-// Jenkinsfile (Advanced - Final Compilable Kaniko Version)
 pipeline {
     agent {
         label 'agent-base'
@@ -110,7 +109,6 @@ pipeline {
                         sh "git commit -m 'CI: Update image tag to ${env.IMAGE_TAG}'"
                         
                         withCredentials([usernamePassword(credentialsId: 'github-credentials', usernameVariable: 'GIT_USER', passwordVariable: 'GIT_TOKEN')]) {
-                            // Fixed: Moved the repoHost definition inside the string interpolation to avoid Groovy parsing errors
                             sh "git push https://${GIT_TOKEN}@${env.GIT_REPO_URL.replace('https://', '').replace('.git', '')} HEAD:main"
                         }
                     } else {
