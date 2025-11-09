@@ -16,7 +16,7 @@ service:
 ingress:
   enabled: false
   className: "nginx"  # Change to match your ingress controller (nginx, traefik, istio, etc.)
-  annotations:
+  annotations: {}
   hosts:
     - host: flask-aws-app.netanelen.com  
       paths:
