@@ -4,6 +4,10 @@
 ## Overview
 This project provides a simple Flask web application to monitor AWS resources (EC2 instances, VPCs, Load Balancers, and AMIs) and deploys it using Helm on Kubernetes. It includes CI/CD automation with Jenkins and a Dockerized deployment.
 
+## Architecture
+
+![HA-GitOps architecture](docs/images/ha-diagram.png)
+
 ## Features
 - View running EC2 instances, VPCs, Load Balancers, and AMIs in your AWS account
 - Flask web app with a simple HTML dashboard
