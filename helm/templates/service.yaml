@@ -2,6 +2,8 @@ apiVersion: v1
 kind: Service
 metadata:
   name: {{ .Release.Name }}
+  labels:
+    {{- include "flask-aws-monitor.labels" . | nindent 4 }}
 spec:
   # If Ingress is enabled, use ClusterIP. Otherwise, use the type from values.yaml
   type: {{ .Values.ingress.enabled | ternary "ClusterIP" .Values.service.type }}
@@ -10,4 +12,4 @@ spec:
       targetPort: {{ .Values.service.port }}
       protocol: TCP
   selector:
-    app: {{ .Release.Name }}
+    {{- include "flask-aws-monitor.selectorLabels" . | nindent 4 }}

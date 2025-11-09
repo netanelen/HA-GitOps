@@ -3,20 +3,20 @@ kind: Deployment
 metadata:
   name: {{ .Release.Name }} 
   labels:
-    app: {{ .Release.Name }} 
+    {{- include "flask-aws-monitor.labels" . | nindent 4 }} 
 spec:
   replicas: {{ .Values.replicaCount }}
   selector:
     matchLabels:
-      app: {{ .Release.Name }}
+      {{- include "flask-aws-monitor.selectorLabels" . | nindent 6 }}
   template:
     metadata:
       labels:
-        app: {{ .Release.Name }}
+        {{- include "flask-aws-monitor.selectorLabels" . | nindent 8 }}
     spec:
       containers:
         - name: {{ .Release.Name }}
-          image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
+          image: "{{ include "flask-aws-monitor.image" . }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           ports:
             - name: http
