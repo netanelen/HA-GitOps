@@ -1,7 +1,7 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: {{ .Release.Name }}-svc
+  name: {{ .Release.Name }}
 spec:
   # If Ingress is enabled, use ClusterIP. Otherwise, use the type from values.yaml
   type: {{ .Values.ingress.enabled | ternary "ClusterIP" .Values.service.type }}

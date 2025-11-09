@@ -14,11 +14,9 @@ service:
   type: LoadBalancer
   port: 5001
 ingress:
-  enabled: true
+  enabled: false
   className: "nginx"  # Change to match your ingress controller (nginx, traefik, istio, etc.)
   annotations:
-    # nginx.ingress.kubernetes.io/rewrite-target: /
-    # cert-manager.io/cluster-issuer: "letsencrypt-prod"  # Uncomment if using cert-manager
   hosts:
     - host: flask-aws-app.netanelen.com  
       paths:
