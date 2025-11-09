@@ -484,12 +484,3 @@ This project is provided as-is for educational and demonstration purposes.
 - [ArgoCD Getting Started](https://argo-cd.readthedocs.io/en/stable/getting_started/)
 - [Jenkins Pipeline Documentation](https://www.jenkins.io/doc/book/pipeline/)
 
----
-
-**Note**: This project is designed for demonstration purposes. For production use, consider:
-- Implementing proper authentication and authorization
-- Adding rate limiting and request validation
-- Using AWS IAM roles instead of access keys
-- Implementing proper logging and monitoring
-- Adding health checks and readiness probes
-- Setting up proper backup and disaster recovery procedures
