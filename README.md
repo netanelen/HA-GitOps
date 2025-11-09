@@ -6,7 +6,7 @@ This project provides a simple Flask web application to monitor AWS resources (E
 
 ## Architecture
 
-![HA-GitOps architecture](docs/images/ha-diagram.png)
+![HA-GitOps architecture](Documents/HA-GitOps.png)
 
 ## Features
 - View running EC2 instances, VPCs, Load Balancers, and AMIs in your AWS account
