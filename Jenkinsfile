@@ -104,6 +104,16 @@ pipeline {
 
         stage('Update Git Repo (Trigger ArgoCD)') {
             steps {
+                script {
+                    withCredentials([usernamePassword(credentialsId: 'github-credentials', usernameVariable: 'GIT_USER', passwordVariable: 'GIT_TOKEN')]) {
+                        sh "git config --global user.email 'jenkins@cicd-bot.com'"
+                        sh "git config --global user.name 'Jenkins Bot'"
+                        // Fetch and checkout main branch
+                        sh "git fetch https://${GIT_TOKEN}@${env.GIT_REPO_URL.replace('https://', '').replace('.git', '')} main"
+                        sh "git checkout -B main FETCH_HEAD"
+                    }
+                }
+
                 container('yq') {
                     echo "Updating Helm chart image tag to ${env.IMAGE_TAG}"
                     sh "test -f helm/values.yaml || { echo 'Error: helm/values.yaml not found'; exit 1; }"
@@ -112,8 +122,6 @@ pipeline {
                 
                 echo "Committing and pushing changes..."
                 script {
-                    sh "git config --global user.email 'jenkins@example.com'"
-                    sh "git config --global user.name 'Jenkins Bot'"
                     sh "git add helm/values.yaml"
                     
                     def hasChanges = sh(
@@ -124,9 +132,8 @@ pipeline {
                     if (hasChanges) {
                         sh "git commit -m 'CI: Update image tag to ${env.IMAGE_TAG}'"
                         
-                        def branch = env.BRANCH_NAME ?: env.GIT_BRANCH?.tokenize('/')?.last() ?: 'main'
                         withCredentials([usernamePassword(credentialsId: 'github-credentials', usernameVariable: 'GIT_USER', passwordVariable: 'GIT_TOKEN')]) {
-                            sh "git push https://${GIT_TOKEN}@${env.GIT_REPO_URL.replace('https://', '').replace('.git', '')} HEAD:${branch}"
+                            sh "git push https://${GIT_TOKEN}@${env.GIT_REPO_URL.replace('https://', '').replace('.git', '')} HEAD:main"
                         }
                     } else {
                         echo "No changes to commit"
