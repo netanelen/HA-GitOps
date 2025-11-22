@@ -65,7 +65,7 @@ pipeline {
                         echo "Installing test dependencies..."
                         sh "pip install -r requirements.txt"
                         echo "Running Tests..."
-                        sh "export PYTHONPATH=$PYTHONPATH:. && pytest tests/"
+                        sh 'export PYTHONPATH=$PYTHONPATH:. && pytest tests/'
                     }
                 }
             }
