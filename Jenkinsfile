@@ -35,9 +35,9 @@ pipeline {
                                 echo "Installing linters..."
                                 sh "pip install flake8 bandit" 
                                 echo "Running Flake8..."
-                                sh "flake8 ./app || true" 
+                                sh "flake8 ./app" 
                                 echo "Running Bandit..."
-                                sh "bandit -r ./app || true"
+                                sh "bandit -r ./app"
                             }
                         }
                     }
@@ -50,9 +50,22 @@ pipeline {
                                     error("Dockerfile not found.")
                                 }
                                 echo "Running Hadolint..."
-                                sh "hadolint Dockerfile || true"
+                                sh "hadolint Dockerfile"
                             }
                         }
+                    }
+                }
+            }
+        }
+
+        stage('Test') {
+            steps {
+                container('python') {
+                    script {
+                        echo "Installing test dependencies..."
+                        sh "pip install -r requirements.txt"
+                        echo "Running Tests..."
+                        sh "pytest tests/"
                     }
                 }
             }
@@ -80,7 +93,10 @@ pipeline {
                     echo "Scanning image ${env.IMAGE_NAME}:${env.IMAGE_TAG}"
                     sh """
                     export DOCKER_CONFIG=/kaniko/.docker
-                    trivy image --exit-code 0 --severity HIGH,CRITICAL ${env.IMAGE_NAME}:${env.IMAGE_TAG}
+                    # Fail on CRITICAL vulnerabilities
+                    trivy image --exit-code 1 --severity CRITICAL --no-progress ${env.IMAGE_NAME}:${env.IMAGE_TAG}
+                    # Report HIGH vulnerabilities but don't fail
+                    trivy image --exit-code 0 --severity HIGH --no-progress ${env.IMAGE_NAME}:${env.IMAGE_TAG}
                     """
                 }
             }
