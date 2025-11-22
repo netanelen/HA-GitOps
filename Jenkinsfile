@@ -33,7 +33,7 @@ pipeline {
                                     error("Directory 'app' not found.")
                                 }
                                 echo "Installing linters..."
-                                sh "pip install flake8 bandit" 
+                                sh "pip install -r requirements.txt" 
                                 echo "Running Flake8..."
                                 sh "flake8 ./app" 
                                 echo "Running Bandit..."
@@ -65,7 +65,7 @@ pipeline {
                         echo "Installing test dependencies..."
                         sh "pip install -r requirements.txt"
                         echo "Running Tests..."
-                        sh "pytest tests/"
+                        sh "export PYTHONPATH=$PYTHONPATH:. && pytest tests/"
                     }
                 }
             }
