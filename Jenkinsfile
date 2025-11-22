@@ -124,8 +124,9 @@ pipeline {
                     if (hasChanges) {
                         sh "git commit -m 'CI: Update image tag to ${env.IMAGE_TAG}'"
                         
+                        def branch = env.BRANCH_NAME ?: env.GIT_BRANCH?.tokenize('/')?.last() ?: 'main'
                         withCredentials([usernamePassword(credentialsId: 'github-credentials', usernameVariable: 'GIT_USER', passwordVariable: 'GIT_TOKEN')]) {
-                            sh "git push https://${GIT_TOKEN}@${env.GIT_REPO_URL.replace('https://', '').replace('.git', '')} HEAD:main"
+                            sh "git push https://${GIT_TOKEN}@${env.GIT_REPO_URL.replace('https://', '').replace('.git', '')} HEAD:${branch}"
                         }
                     } else {
                         echo "No changes to commit"
